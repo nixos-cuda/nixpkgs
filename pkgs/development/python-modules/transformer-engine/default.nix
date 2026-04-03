@@ -110,7 +110,7 @@ buildPythonPackage.override { stdenv = backendStdenv; } (finalAttrs: {
       # https://github.com/NVIDIA/TransformerEngine/pull/2815
       (fetchpatch {
         name = "fix-nvshmem-build";
-        url = "https://github.com/GaetanLepage/TransformerEngine/commit/60cfe87ccee432a18a40ae643d31ade48ed21b24.patch";
+        url = "https://github.com/NVIDIA/TransformerEngine/commit/e83c09742166dfef3f871cfa1407605feafb3afe.patch";
         hash = "sha256-5pf0Dg1XL7oAQjR1JZcdgbeaGj9qw9G5+i9Ac0iff64=";
       })
     ];
@@ -203,6 +203,9 @@ buildPythonPackage.override { stdenv = backendStdenv; } (finalAttrs: {
     cudaPackages.libcusparse # cusparse.h
     cudaPackages.nccl # nccl.h
     pybind11 # pybind11/pybind11.h
+  ]
+  ++ optionals withMpi [
+    mpi # mpi.h
   ];
 
   runtimeDependencies = optionals withNvshmem [
@@ -213,6 +216,13 @@ buildPythonPackage.override { stdenv = backendStdenv; } (finalAttrs: {
 
   preBuild = ''
     export NVTE_BUILD_MAX_JOBS=$NIX_BUILD_CORES
+    export NVTE_BUILD_THREADS_PER_JOB=4 # TODO REMOVE
+
+    echo "-------------------------------------"
+    echo "withJax: ${if withJax then "TRUE" else "FALSE"}"
+    echo "withPytorch: ${if withPytorch then "TRUE" else "FALSE"}"
+    echo "$NVTE_FRAMEWORK"
+    echo "-------------------------------------"
   '';
 
   dependencies = [
@@ -232,15 +242,21 @@ buildPythonPackage.override { stdenv = backendStdenv; } (finalAttrs: {
     torch
   ];
 
-  pythonImportsCheck = [
-    "transformer_engine"
-  ]
-  ++ lib.optionals withJax [
-    "transformer_engine_jax"
-  ]
-  ++ lib.optionals withPytorch [
-    "transformer_engine_torch"
-  ];
+  pythonImportsCheck =
+    # When built with nvshmem support `dlopen`ing libtransformer_engine.so `dlopen`s
+    # libnvidia-ml.so.1 which is provided by the GPU driver at run time
+    if withNvshmem then
+      [ ]
+    else
+      optionals (!withNvshmem) [
+        "transformer_engine"
+      ]
+      ++ optionals withJax [
+        "transformer_engine_jax"
+      ]
+      ++ optionals withPytorch [
+        "transformer_engine_torch"
+      ];
 
   # Almost all tests require GPU access
   doCheck = false;
