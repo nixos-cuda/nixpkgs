@@ -82,6 +82,16 @@ let
           "internal/pkg/util/env/clean.go" = [
             "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
           ];
+          # Since 4.4.2, SingularityCE locates helper binaries (mount,
+          # mksquashfs, fusermount, ...) only via the "root search path" and
+          # "user search path" directives, no longer via env.DefaultPath.
+          # Inject the Nixpkgs binary paths into both defaults.
+          "pkg/util/singularityconf/config.go" = [
+            # root search path
+            "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            # user search path
+            "$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+          ];
         };
       };
 
