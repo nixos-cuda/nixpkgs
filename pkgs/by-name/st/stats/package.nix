@@ -343,7 +343,7 @@ stdenv.mkDerivation (finalAttrs: {
   passthru.updateScript = nix-update-script { };
 
   meta = {
-    changelog = "https://github.com/exelban/stats/releases/tag/v${finalAttrs.version}";
+    changelog = "https://github.com/exelban/stats/releases/tag/${finalAttrs.src.tag}";
     description = "macOS system monitor in your menu bar";
     homepage = "https://github.com/exelban/stats";
     license = lib.licenses.mit;
