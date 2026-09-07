@@ -272,6 +272,8 @@ buildPythonPackage (
         sed -i -E 's/"trove-classifiers==[^"]+"/"trove-classifiers"/' pyproject.toml
         sed -i -E 's/"smmap==[^"]+"/"smmap"/' pyproject.toml
         sed -i -E 's/"pathspec==[^"]+"/"pathspec"/' pyproject.toml
+        sed -i -E 's/"croniter>=[^"]+"/"croniter"/' pyproject.toml
+        sed -i -E 's/"sqlalchemy\[asyncio\]>=[^"]+"/"sqlalchemy[asyncio]"/' pyproject.toml
 
         # Copy built UI assets
         cp -r ${airflowUi}/share/airflow/ui/dist src/airflow/ui/

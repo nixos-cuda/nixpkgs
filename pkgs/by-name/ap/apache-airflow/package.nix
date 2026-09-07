@@ -12,6 +12,15 @@ let
   python = python3.override {
     self = python;
     packageOverrides = pySelf: pySuper: {
+      structlog = pySuper.structlog.overridePythonAttrs (old: rec {
+        version = "26.1.0";
+        src = fetchFromGitHub {
+          owner = "hynek";
+          repo = "structlog";
+          tag = version;
+          hash = "sha256-Q31eqeRYAbwn6Cj3hkXfy3udeBHHglEk5/qTjKbBbL8=";
+        };
+      });
       apache-airflow = pySelf.callPackage ./python-package.nix { inherit enabledProviders; };
     };
   };
