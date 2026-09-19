@@ -30,7 +30,7 @@
 
 buildPythonPackage (finalAttrs: {
   pname = "numpyro";
-  version = "0.21.0";
+  version = "0.22.0";
   pyproject = true;
   __structuredAttrs = true;
 
@@ -38,13 +38,8 @@ buildPythonPackage (finalAttrs: {
     owner = "pyro-ppl";
     repo = "numpyro";
     tag = finalAttrs.version;
-    hash = "sha256-4NA1m2N0AZy3ausAZc6+PPw175joGC7WwfZr0Ri0uK8=";
+    hash = "sha256-aUd3u/fEMMSTPFyRJgalVTETG561AgJmGhJl2C3lMSw=";
   };
-
-  patches = [
-    # Account for jax 0.11 hoisting tracing-time constants into `jaxpr.invars`
-    ./jax-0.11-provenance-consts.patch
-  ];
 
   build-system = [ setuptools ];
 
