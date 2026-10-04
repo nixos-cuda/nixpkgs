@@ -31,11 +31,21 @@
 let
   cudaVersion = cudaPackages.cudaMajorMinorVersion;
 
+  libCudaPath =
+    # Use cuda_compat to provide libcuda.so on pre-Thor Jetsons
+    if (cudaPackages.cuda_compat.meta.available or false) then
+      cudaPackages.cuda_compat
+
+    # Else, use the host CUDA driver library
+    else
+      addDriverRunpath.driverLink;
+
   versionSpecificAttrs =
     let
       args = {
         inherit replaceVars;
         cudaLibPaths = {
+          libcuda = libCudaPath;
           libcudart = lib.getLib cudaPackages.cuda_cudart;
           libcufile = lib.getLib cudaPackages.libcufile;
           libnvfatbin = lib.getLib cudaPackages.libnvfatbin;
@@ -55,6 +65,7 @@ let
       "13.1" = import ./13_1.nix args;
       "13.2" = import ./13_2.nix args;
       "13.3" = import ./13_3.nix args;
+      "13.4" = import ./13_4.nix args;
     }
     .${cudaVersion} or (throw "Unsupported cuda-bindings version: ${cudaVersion}");
 
@@ -83,17 +94,9 @@ buildPythonPackage (finalAttrs: {
   sourceRoot = "${finalAttrs.src.name}/cuda_bindings";
 
   postPatch =
-    let
-      libCudaPath =
-        # Use cuda_compat to provide libcuda.so on pre-Thor Jetsons
-        if (cudaPackages.cuda_compat.meta.available or false) then
-          cudaPackages.cuda_compat
-
-        # Else, use the host CUDA driver library
-        else
-          addDriverRunpath.driverLink;
-    in
-    ''
+    # From 13.4, the driver library is loaded by cuda/bindings/_internal/driver_linux.pyx, which is patched by
+    # nvidiaLibsPatch.
+    lib.optionalString (cudaOlder "13.4") ''
       substituteInPlace cuda/bindings/_internal/nvjitlink_linux.pyx \
         --replace-fail \
           "handle = dlopen('libcuda.so.1'" \

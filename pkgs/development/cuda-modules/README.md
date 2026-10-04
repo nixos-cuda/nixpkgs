@@ -41,8 +41,6 @@ not straightforward to include. These packages are:
   - `nvlsm`: contains FHS paths/NVSwitch and NVLINK software
   - `libnvidia_nscq`: NVSwitch software
   - `libnvsdm`: NVSwitch software
-- `cublasmp`:
-  - `libcublasmp`: `nvshmem` isn't packaged.
 - `cudnn`:
   - `cudnn_samples`: requires FreeImage, which is abandoned and not packaged.
 

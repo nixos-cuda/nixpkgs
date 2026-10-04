@@ -188,6 +188,15 @@ let
           + "computed NVIDIA hostRedistSystem (${passthruExtra.hostRedistSystem}) to be linux-sbsa";
         assertion = postSbsaJetsonCudaCapabilities != [ ] -> passthruExtra.hostRedistSystem == "linux-sbsa";
       }
+      # NVIDIA provides no linux-aarch64 redists for CUDA 13; Jetson Orin uses linux-sbsa from CUDA 13.2 (JetPack 7.2).
+      # https://docs.nvidia.com/cuda/archive/13.0.0/cuda-toolkit-release-notes/index.html
+      # https://developer.nvidia.com/embedded/jetpack/downloads/archive-7.2
+      {
+        message =
+          "Requested Jetson CUDA capabilities (${toJSON preSbsaJetsonCudaCapabilities}) are not supported by "
+          + "CUDA ${cudaMajorMinorVersion}; use CUDA 12 or CUDA 13.2 and later";
+        assertion = versionAtLeast cudaMajorMinorVersion "13.0" -> preSbsaJetsonCudaCapabilities == [ ];
+      }
     ];
 
   failedAssertionsString = _mkFailedAssertionsString assertions;
