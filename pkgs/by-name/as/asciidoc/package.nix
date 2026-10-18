@@ -7,7 +7,7 @@
   autoreconfHook,
   installShellFiles,
   enableStandardFeatures ? false,
-  sourceHighlight,
+  source-highlight,
   highlight,
   graphviz,
   texliveMinimal,
@@ -246,7 +246,7 @@ python3.pkgs.buildPythonApplication (finalAttrs: {
             -e "s|run('convert|run('${lib.getExe' imagemagick "convert"}|g" \
             -i "asciidoc/resources/filters/music/music2png.py"
 
-        sed -e 's|filter="source-highlight|filter="${sourceHighlight}/bin/source-highlight|' \
+        sed -e 's|filter="source-highlight|filter="${source-highlight}/bin/source-highlight|' \
             -e 's|filter="highlight|filter="${highlight}/bin/highlight|' \
             -e 's|filter="pygmentize|filter="${pygments}/bin/pygmentize|' \
             -i "asciidoc/resources/filters/source/source-highlight-filter.conf"
@@ -316,8 +316,6 @@ python3.pkgs.buildPythonApplication (finalAttrs: {
 
     runHook postCheck
   '';
-
-  __structuredAttrs = true;
 
   meta = {
     description = "Text-based document generation system";
