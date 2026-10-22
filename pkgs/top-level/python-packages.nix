@@ -5068,6 +5068,8 @@ self: super: with self; {
 
   dlinfo = callPackage ../development/python-modules/dlinfo { };
 
+  dllist = callPackage ../development/python-modules/dllist { };
+
   dllogger = callPackage ../development/python-modules/dllogger { };
 
   dlms-cosem = callPackage ../development/python-modules/dlms-cosem { };
