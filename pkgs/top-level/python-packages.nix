@@ -21110,6 +21110,8 @@ self: super: with self; {
 
   torch-pitch-shift = callPackage ../development/python-modules/torch-pitch-shift { };
 
+  torch-remat = callPackage ../development/python-modules/torch-remat { };
+
   torch-tb-profiler = callPackage ../development/python-modules/torch-tb-profiler/default.nix { };
 
   torchWithCuda = self.torch.override {
