@@ -60,6 +60,7 @@ buildPythonPackage (finalAttrs: {
     changelog = "https://nvidia.github.io/cuda-python/cuda-pathfinder/${finalAttrs.version}/release/${finalAttrs.version}-notes.html";
     license = lib.licenses.asl20;
     maintainers = with lib.maintainers; [ GaetanLepage ];
+    teams = [ lib.teams.cuda ];
     platforms = lib.platforms.linux;
   };
 })
