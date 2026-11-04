@@ -211,13 +211,13 @@ let
 in
 stdenv.mkDerivation (finalAttrs: {
   inherit pname;
-  version = "262";
+  version = "262.1";
 
   src = fetchFromGitHub {
     owner = "systemd";
     repo = "systemd";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-oGzFW2dD8abLXBwDczr1hvl712s03CHTUqOz6uPfhmQ=";
+    hash = "sha256-BE94QT8jd0lTp8u/ZCi2KraeiuXJeJhnwgPhmFYKUew=";
   };
 
   # PATCH POLICY
@@ -244,8 +244,9 @@ stdenv.mkDerivation (finalAttrs: {
   patches = [
     ./0001-Don-t-try-to-unmount-nix-or-nix-store.patch
     ./0002-Change-usr-share-zoneinfo-to-etc-zoneinfo.patch
-    ./0003-path-util.h-add-placeholder-for-DEFAULT_PATH_NORMAL.patch
-    ./0004-core-don-t-taint-on-unmerged-usr.patch
+    ./0003-add-rootprefix-to-lookup-dir-paths.patch
+    ./0004-path-util.h-add-placeholder-for-DEFAULT_PATH_NORMAL.patch
+    ./0005-core-don-t-taint-on-unmerged-usr.patch
   ];
 
   postPatch = ''
@@ -542,6 +543,8 @@ stdenv.mkDerivation (finalAttrs: {
     (lib.mesonBool "hwdb" withHwdb)
     (lib.mesonBool "timedated" withTimedated)
     (lib.mesonBool "timesyncd" withTimesyncd)
+    (lib.mesonBool "nsresourced" withNsresourced)
+    (lib.mesonBool "mountfsd" withMountfsd)
     (lib.mesonBool "userdb" withUserDb)
     (lib.mesonBool "coredump" withCoredump)
     (lib.mesonBool "firstboot" withFirstboot)
@@ -558,12 +561,6 @@ stdenv.mkDerivation (finalAttrs: {
     (lib.mesonBool "create-log-dirs" false)
     (lib.mesonBool "smack" true)
     (lib.mesonBool "b_pie" true)
-  ]
-  ++ lib.optionals withNsresourced [
-    (lib.mesonBool "nsresourced" withNsresourced)
-  ]
-  ++ lib.optionals withMountfsd [
-    (lib.mesonBool "mountfsd" withMountfsd)
   ]
   ++ lib.optionals (withLibBPF && vmlinux-btf != null) [
     (lib.mesonOption "vmlinux-h" "provided")

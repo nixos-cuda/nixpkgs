@@ -17,7 +17,6 @@ python3Packages.buildPythonApplication (finalAttrs: {
   pname = "mistral-vibe";
   version = "3.0.4";
   pyproject = true;
-  __structuredAttrs = true;
 
   src = fetchFromGitHub {
     owner = "mistralai";
