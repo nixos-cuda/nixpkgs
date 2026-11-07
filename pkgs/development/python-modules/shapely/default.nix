@@ -29,6 +29,15 @@ buildPythonPackage rec {
     hash = "sha256-ddBbNAahYK1/+VtCYVqjrhOfRAtZERv7axTHrYlYBfA=";
   };
 
+  # Without .git, versioneer sets `shapely.__version__` to "0+unknown", which breaks
+  # downstream version checks (e.g. pyogrio). generate_version.py reads ./_version.py first.
+  postPatch = ''
+    cat > _version.py <<EOF
+    __version__ = "${version}"
+    __git_version__ = "${src.tag}"
+    EOF
+  '';
+
   nativeBuildInputs = [
     pyprojectVersionPatchHook
     pkg-config
