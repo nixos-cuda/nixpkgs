@@ -2,6 +2,7 @@
   lib,
   rustPlatform,
   fetchCrate,
+  aws-lc,
   pkg-config,
   stdenv,
   aws-lc,
