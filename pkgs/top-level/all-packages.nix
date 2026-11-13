@@ -5962,6 +5962,7 @@ with pkgs;
   inherit (callPackages ../by-name/li/libressl { })
     libressl_4_2
     libressl_4_3
+    libressl_4_4
     ;
 
   openssl = openssl_3_5;
