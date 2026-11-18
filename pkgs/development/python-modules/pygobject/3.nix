@@ -19,7 +19,7 @@
 
 buildPythonPackage rec {
   pname = "pygobject";
-  version = "3.58.0";
+  version = "3.58.1";
 
   outputs = [
     "out"
@@ -30,7 +30,7 @@ buildPythonPackage rec {
 
   src = fetchurl {
     url = "mirror://gnome/sources/pygobject/${lib.versions.majorMinor version}/pygobject-${version}.tar.gz";
-    hash = "sha256-RQaGl94//kaEDKNpcF8jEYs0209962P27/B5pnNN3Mo=";
+    hash = "sha256-TIBZit4X+6p3mOAaJdC/Kc4Ql0B4YCagdMXGK7PnnSM=";
   };
 
   depsBuildBuild = [ pkg-config ];
@@ -50,11 +50,12 @@ buildPythonPackage rec {
   ]
   ++ lib.optionals stdenv.hostPlatform.isDarwin [ ncurses ];
 
-  propagatedBuildInputs = [
-    gobject-introspection # e.g. try building: python3Packages.urwid python3Packages.pydbus
-  ]
-  ++ lib.optionals withCairo [
+  propagatedBuildInputs = lib.optionals withCairo [
     pycairo
+  ];
+
+  propagatedNativeBuildInputs = [
+    gobject-introspection.setupHook
   ];
 
   # Fixes https://github.com/NixOS/nixpkgs/issues/378447
@@ -75,7 +76,7 @@ buildPythonPackage rec {
   passthru = {
     updateScript = gnome.updateScript {
       packageName = "pygobject";
-      attrPath = "python3.pkgs.pygobject3";
+      attrPath = "python3Packages.pygobject3";
       versionPolicy = "odd-unstable";
     };
   };
