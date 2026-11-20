@@ -2169,8 +2169,8 @@ with pkgs;
     withCloudUi = true;
   };
 
-  nodejs = nodejs_24;
-  nodejs-slim = nodejs-slim_24;
+  nodejs = nodejs_26;
+  nodejs-slim = nodejs-slim_26;
 
   nodejs-slim_22 = callPackage ../development/web/nodejs/v22.nix { };
   nodejs_22 = callPackage ../development/web/nodejs/symlink.nix { nodejs-slim = nodejs-slim_22; };
@@ -2187,8 +2187,8 @@ with pkgs;
   nodejs_27 = callPackage ../development/web/nodejs/symlink.nix { nodejs-slim = nodejs-slim_27; };
 
   # Update this when adding the newest nodejs major version!
-  nodejs_latest = nodejs_26;
-  nodejs-slim_latest = nodejs-slim_26;
+  nodejs_latest = nodejs_27;
+  nodejs-slim_latest = nodejs-slim_27;
 
   buildNpmPackage = callPackage ../build-support/node/build-npm-package { };
 
@@ -3324,14 +3324,13 @@ with pkgs;
 
   haskellPackages = recurseIntoAttrs (
     # Prefer native-bignum to avoid linking issues with gmp;
-    # GHC 9.10 doesn't work too well with iserv-proxy.
     if stdenv.hostPlatform.isStatic then
       haskell.packages.native-bignum.ghc912
     # JS backend can't use gmp
     else if stdenv.hostPlatform.isGhcjs then
-      haskell.packages.native-bignum.ghc910
+      haskell.packages.native-bignum.ghc912
     else
-      haskell.packages.ghc910
+      haskell.packages.ghc912
   );
 
   # haskellPackages.ghc is build->host (it exposes the compiler used to build the
@@ -3345,14 +3344,13 @@ with pkgs;
   ghc =
     targetPackages.haskellPackages.ghc or (
       # Prefer native-bignum to avoid linking issues with gmp;
-      # GHC 9.10 doesn't work too well with iserv-proxy.
       if stdenv.hostPlatform.isStatic then
         haskell.compiler.native-bignum.ghc912
       # JS backend can't use GMP
       else if stdenv.targetPlatform.isGhcjs then
-        haskell.compiler.native-bignum.ghc910
+        haskell.compiler.native-bignum.ghc912
       else
-        haskell.compiler.ghc910
+        haskell.compiler.ghc912
     );
 
   # TODO(@NixOS/haskell): deprecate this alias?
@@ -5904,8 +5902,9 @@ with pkgs;
   zunclient = with python313Packages; toPythonApplication python-zunclient;
 
   inherit (callPackages ../by-name/li/libressl { })
-    libressl_4_2
+    # When you remove a version here, add a notice in aliases.nix.
     libressl_4_3
+    libressl_4_4
     ;
 
   openssl = openssl_3_5;

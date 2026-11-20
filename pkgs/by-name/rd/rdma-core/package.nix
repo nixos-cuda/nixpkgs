@@ -1,15 +1,15 @@
 {
   lib,
   stdenv,
-  fetchFromGitHub,
+  fetchurl,
   gitUpdater,
   cmake,
   pkg-config,
   docutils,
-  pandoc,
   libnl,
   udev,
-  udevCheckHook,
+  # This package should not depend on udevCheckHook as it's in the systemd
+  # closure and would introduce another systemd build.
   python3,
   perl,
   withManPages ? !stdenv.hostPlatform.isi686,
@@ -17,13 +17,12 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "rdma-core";
-  version = "65.0";
+  version = "66.0";
 
-  src = fetchFromGitHub {
-    owner = "linux-rdma";
-    repo = "rdma-core";
-    rev = "v${finalAttrs.version}";
-    hash = "sha256-cAaWVE6/JU8ezjx+XrxNI6Su6VKxb2Jxl29sxU/yepI=";
+  # Use release tarball instead of git sources (contains pre-built man pages and avoids Pandoc dependency)
+  src = fetchurl {
+    url = "https://github.com/linux-rdma/rdma-core/releases/download/v${finalAttrs.version}/rdma-core-${finalAttrs.version}.tar.gz";
+    hash = "sha256-oD+tuytSNQV0P/APTg+G07/W4L6s8zA1ex36j72dJGs=";
   };
 
   __structuredAttrs = true;
@@ -42,11 +41,9 @@ stdenv.mkDerivation (finalAttrs: {
     cmake
     pkg-config
     python3
-    udevCheckHook
   ]
   ++ lib.optionals withManPages [
     docutils
-    pandoc
   ];
 
   buildInputs = [
@@ -88,6 +85,7 @@ stdenv.mkDerivation (finalAttrs: {
   doInstallCheck = true;
 
   passthru.updateScript = gitUpdater {
+    url = "https://github.com/linux-rdma/rdma-core.git";
     rev-prefix = "v";
   };
 

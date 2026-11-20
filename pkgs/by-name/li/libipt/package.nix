@@ -8,21 +8,25 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "libipt";
-  version = "2.2";
+  version = "2.2.1";
 
   src = fetchFromGitHub {
     owner = "intel";
     repo = "libipt";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-hSC00GbVllJStgt9iA9WT54U8NQRtgJHuyZyb5ougc8=";
+    hash = "sha256-ym2ARpO64FvCMOmQRVlT1UETGNfqqJFIK4qv1rW3uDw=";
   };
 
   nativeBuildInputs = [ cmake ];
   buildInputs = lib.optional stdenv.hostPlatform.isFreeBSD freebsd.libstdthreads;
 
+  strictDeps = true;
+
   env = lib.optionalAttrs stdenv.hostPlatform.isFreeBSD {
     NIX_LDFLAGS = "-lstdthreads";
   };
+
+  __structuredAttrs = true;
 
   meta = {
     changelog = "https://github.com/intel/libipt/releases/tag/v${finalAttrs.version}";
